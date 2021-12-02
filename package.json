@@ -1,0 +1,20 @@
+{
+  "name": "booking-handler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mqttHandler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node mqttHandler.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.chalmers.se:courses/dit355/test-teams-formation/team-7/booking-handler.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mqtt": "^4.2.8"
+  }
+}
