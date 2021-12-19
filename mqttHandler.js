@@ -14,7 +14,7 @@ const client = mqtt.connect(connectUrl, {
   reconnectPeriod: 1000,
 })
 
-const topic = '/dentistimo/booking-handler' 
+const topic = 'dentistimo/booking-handler' 
 client.on('connect', () => {
   console.log('Connected')
   client.subscribe([topic], () => {
@@ -27,5 +27,5 @@ client.on('connect', () => {
   })
 })
 client.on('message', (topic, payload) => {
-  console.log('Received Message:', topic, payload.toString())
+  console.log('Received Message:', this.topic, payload.toString())
 })
