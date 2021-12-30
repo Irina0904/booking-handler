@@ -27,19 +27,31 @@ client.on('connect', () => {
             if (err) console.log(err);
             const db = mongoUtil.getDb();
             const appointments = db.collection("appointments");
-            //TODO: add the booking code when inserting into the collection
-            appointments.insertOne(bookingResponse.bookingRequest);
+           
+            let bookingCode = Math.random().toString(36).substring(2);
+            let newRequest = {
+              "clinicName": bookingResponse.bookingRequest.clinicName,
+              "clinicId": bookingResponse.bookingRequest.clinicId,
+              "appointmentDate": bookingResponse.bookingRequest.appointmentDate,
+              "bookingCode": bookingCode,
+              "firstname": bookingResponse.bookingRequest.firstname,
+              "lastname": bookingResponse.bookingRequest.lastname,
+              "email": bookingResponse.bookingRequest.email,
+              "number": bookingResponse.bookingRequest.number,
+              "description": bookingResponse.bookingRequest.description,
+              }
+
+            appointments.insertOne(newRequest);
 
             var appointmentDate = new Date(Date.parse(bookingResponse.bookingRequest.appointmentDate))
-            //TODO: send the booking code to be displayed 
-            //on the bookingResponse page
             let approveMessage = {
               "status": "Added",
               "message": "Your appointment has been made!",
               "info": "Appointment details have been sent to your email.",
               "date": appointmentDate.toDateString(),
               "time": appointmentDate.getHours() + ":" + appointmentDate.getMinutes(),
-              "clinic": bookingResponse.bookingRequest.clinicName
+              "clinic": bookingResponse.bookingRequest.clinicName,
+              "bookingCode": bookingCode
             }
 
             console.log(approveMessage);
