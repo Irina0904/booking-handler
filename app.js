@@ -1,5 +1,7 @@
 var mongoUtil = require('./mongoUtil');
 var mqttClient = require('./mqttHandler');
+var nodemailer = require('nodemailer');
+
 
 const client = mqttClient.getMQTTClient();
 
@@ -55,6 +57,33 @@ client.on('connect', () => {
             }
 
             console.log(approveMessage);
+
+            var transporter = nodemailer.createTransport({
+              service: 'gmail',
+              auth: {
+                user: 'dentistimoclinics@gmail.com',
+                pass: 'dentistimo123'
+              }
+            });
+
+            var mailOptions = {
+              from: 'dentistimoclinics@gmail.com',
+              to: 'turquis.amanda@gmail.com',
+              subject: 'Booking Confirmation',
+              text: "Your appointment has been made!" + " \n " + " \n "
+              + "Clinic: " + bookingResponse.bookingRequest.clinicName + " \n " 
+              + "Date: " +appointmentDate.toDateString() + " \n " 
+              + "Time: " + appointmentDate.getHours() + ":" + appointmentDate.getMinutes() + " \n " 
+              + "Booking code: " + bookingCode
+            };
+            
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
 
             client.publish('dentistimo/ui-booking-response', JSON.stringify(approveMessage), { qos: 0, retain: false }, (error) => {
               if (error) {
