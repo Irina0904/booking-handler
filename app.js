@@ -19,6 +19,39 @@ client.on('connect', () => {
           console.error(error)
         }
       })
+      } else if (topic === "dentistimo/check-appointment") {
+        mongoUtil.connectToServer(function (err) {
+          if (err) console.log(err);
+          const db = mongoUtil.getDb();
+          const appointments = db.collection("appointments");
+          
+          appointments
+            .find({"bookingCode": payload.toString()})
+            .toArray()
+              .then((result) =>{
+                console.log(result);
+                
+                if (result[0] != null) {
+                  
+                client.publish('dentistimo/check-appointment-response', JSON.stringify(result), { qos: 0, retain: false }, (error) => {
+                  if (error) {
+                    console.error(error)
+                  }
+                })
+              } else {
+                console.log("Booking code not found");
+                      let notFoundMessage = {
+                        "status": "Rejected",
+                        "message": "Sorry, your appointment has not been found. Please try with a different booking code or contact us."
+                      }
+                      client.publish('dentistimo/check-appointment-response', JSON.stringify(notFoundMessage), { qos: 0, retain: false }, (error) => {
+                        if (error) {
+                          console.error(error)
+                        }
+                      })
+              }
+              });
+          }); 
       } else if (topic === 'dentistimo/booking-response') {
         var bookingResponse = JSON.parse(payload);
 
