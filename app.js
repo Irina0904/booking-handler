@@ -151,6 +151,30 @@ client.on('connect', () => {
           console.log(err);
         } else {
           console.log("Successfully deleted the appointment")
+
+          var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'dentistimoclinics@gmail.com',
+              pass: 'dentistimo123'
+            }
+          });
+
+          var mailOptions = {
+            from: 'dentistimoclinics@gmail.com',
+            to: 'mahelisilva07@gmail.com',
+            subject: 'Booking Cancellation',
+            text: "Your dentist appointment has been cancelled!" + " \n " + " \n "
+              + "Booking code: " + receivedBC
+          };
+
+          transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
         }
       })
     }
